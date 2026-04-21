@@ -1,3 +1,4 @@
+import { NavLink } from 'react-router-dom';
 import { navLinks } from '../constants';
 
 const Sidepanel = () => {
@@ -10,11 +11,15 @@ const Sidepanel = () => {
 
 			<ul className='flex flex-col justify-center gap-1'>
 				{navLinks.map((link, index) => (
-					<li
-						key={index}
-						className='h-10 m-1 p-2 rounded-sm hover:bg-[#0472ED]'
-					>
-						<span className='text-white font-normal'>{link.name}</span>
+					<li key={index}>
+						<NavLink
+							to={link.link}
+							className={({ isActive }) =>
+								`block h-10 m-1 p-2 rounded-sm hover:bg-[#0472ED] ${isActive ? 'bg-[#0472ED]' : ''}`
+							}
+						>
+							<span className='text-white font-normal'>{link.name}</span>
+						</NavLink>
 					</li>
 				))}
 			</ul>

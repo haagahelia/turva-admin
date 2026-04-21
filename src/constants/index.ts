@@ -1,15 +1,15 @@
 const navLinks = [
 	{
 		name: 'Quizzes',
-		link: '#quizzes',
+		link: '/quizzes',
 	},
 	{
 		name: 'Worlds',
-		link: '#worlds',
+		link: '/worlds',
 	},
 	{
 		name: 'Users',
-		link: '#users',
+		link: '/users',
 	},
 ];
 
