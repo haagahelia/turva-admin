@@ -67,10 +67,7 @@ const Quizzes = () => {
 					+ Create New Quiz
 				</button>
 
-				<div
-					role='name-bar'
-					className='grid grid-cols-[minmax(0,4fr)_80px_100px_200px_80px] items-center gap-4 p-2 my-3 bg-gray-600 text-white text-md font-normal'
-				>
+				<div role='name-bar' className='quiz-grid quiz-grid-header'>
 					<span>Name</span>
 					<span>Id</span>
 					<span>World Id</span>
@@ -79,43 +76,35 @@ const Quizzes = () => {
 				</div>
 				{quizzes.map((quiz) => (
 					<li key={quiz.quiz_id} className='flex flex-col w-full h-16'>
-						<div className='grid grid-cols-[minmax(0,4fr)_80px_100px_200px_80px] items-center gap-4 p-2'>
-							<span className='font-medium text-md truncate'>
-								{quiz.quiz_name_en}
-							</span>
-							<span className='font-medium text-md'>{quiz.quiz_id}</span>
-							<span className='font-medium text-md'>{quiz.world_id}</span>
-							<span className='font-medium text-md'>
-								{formatDate(quiz.created_at)}
-							</span>
-							<div className='flex gap-3'>
+						<div className='quiz-grid'>
+							<span className='quiz-name-cell'>{quiz.quiz_name_en}</span>
+							<span className='quiz-cell'>{quiz.quiz_id}</span>
+							<span className='quiz-cell'>{quiz.world_id}</span>
+							<span className='quiz-cell'>{formatDate(quiz.created_at)}</span>
+							<div className='quiz-actions'>
 								<button
 									type='button'
 									aria-label='Delete'
-									className='group relative hover:cursor-pointer'
+									className='quiz-action-btn'
 									onClick={onDeleteClick}
 								>
 									<FontAwesomeIcon
 										icon={faTrashCan}
 										style={{ color: 'rgb(250,24,44)', scale: 1.25 }}
 									/>
-									<span className='pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 rounded bg-slate-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100'>
-										Delete
-									</span>
+									<span className='quiz-action-tooltip'>Delete</span>
 								</button>
 								<button
 									type='button'
 									aria-label='Edit'
-									className='group relative hover:cursor-pointer'
+									className='quiz-action-btn'
 									onClick={onEditClick}
 								>
 									<FontAwesomeIcon
 										icon={faPenToSquare}
 										style={{ color: 'rgb(116,192,252)', scale: 1.25 }}
 									/>
-									<span className='pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 rounded bg-slate-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100'>
-										Edit
-									</span>
+									<span className='quiz-action-tooltip'>Edit</span>
 								</button>
 							</div>
 						</div>
