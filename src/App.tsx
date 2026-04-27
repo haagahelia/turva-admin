@@ -8,7 +8,7 @@ function App() {
 	return (
 		<div className='flex min-h-dvh flex-row'>
 			<Sidepanel />
-			<main className='flex-1 p-6'>
+			<main className='flex-1 p-4 bg-gray-200'>
 				<Routes>
 					<Route path='/' element={<Navigate to='/quizzes' replace />} />
 					<Route path='/quizzes' element={<Quizzes />} />
