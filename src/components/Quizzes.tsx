@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { formatDate } from '../util/Dateparser';
 import { faTrashCan, faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { words } from '../constants';
 
 interface QuizTypes {
 	quiz_id: number;
@@ -68,11 +69,9 @@ const Quizzes = () => {
 				</button>
 
 				<div role='name-bar' className='quiz-grid quiz-grid-header'>
-					<span>Name</span>
-					<span>Id</span>
-					<span>World Id</span>
-					<span>Created At</span>
-					<span>Actions</span>
+					{words.map((word) => (
+						<span>{word.name}</span>
+					))}
 				</div>
 				{quizzes.map((quiz) => (
 					<li key={quiz.quiz_id} className='flex flex-col w-full h-16'>
