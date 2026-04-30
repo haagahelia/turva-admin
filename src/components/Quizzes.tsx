@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { formatDate } from '../util/Dateparser';
 import { faTrashCan, faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { words } from '../constants';
+import { quizPageWords } from '../constants';
 
 interface QuizTypes {
 	quiz_id: number;
@@ -54,7 +54,7 @@ const Quizzes = () => {
 				role='header'
 				className='h-10 w-full bg-transparent text-2xl font-semibold font-sans'
 			>
-				Quiz controll center
+				Quiz control center
 			</div>
 			{error ?
 				<p className='mt-2 text-sm text-red-700'>{error}</p>
@@ -69,7 +69,7 @@ const Quizzes = () => {
 				</button>
 
 				<div role='name-bar' className='quiz-grid quiz-grid-header'>
-					{words.map((word) => (
+					{quizPageWords.map((word) => (
 						<span>{word.name}</span>
 					))}
 				</div>
