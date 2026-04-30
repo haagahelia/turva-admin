@@ -10,4 +10,13 @@ export default defineConfig({
     react(),
     babel({ presets: [reactCompilerPreset()] })
   ],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://turva-back-turva-back.2.rahtiapp.fi',
+        changeOrigin: true,
+        secure: true,
+      },
+    },
+  },
 })

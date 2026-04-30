@@ -1,6 +1,41 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 body {
 	margin: 0;
 	min-height: 100vh;
+}
+
+@layer components {
+	.quiz-grid {
+		@apply grid items-center gap-4 p-2;
+		grid-template-columns: minmax(0, 4fr) 80px 100px 200px 80px;
+	}
+
+	.quiz-grid-header {
+		@apply my-3 bg-gray-600 text-white text-base font-normal;
+	}
+
+	.quiz-cell {
+		@apply font-medium text-base;
+	}
+
+	.quiz-name-cell {
+		@apply font-medium text-base truncate;
+	}
+
+	.quiz-actions {
+		@apply flex gap-3;
+	}
+
+	.quiz-action-btn {
+		@apply relative cursor-pointer;
+	}
+
+	.quiz-action-tooltip {
+		@apply pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 rounded bg-slate-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity;
+	}
+
+	.quiz-action-btn:hover .quiz-action-tooltip {
+		@apply opacity-100;
+	}
 }
