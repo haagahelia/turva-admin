@@ -48,6 +48,8 @@ const Quizzes = () => {
 		/* TODO implement editing funtionality */
 	};
 
+	// TODO Worlds & Quizzes use basically the same tsx. In the future abstract it and make it reusable between components
+
 	return (
 		<section className='flex flex-col'>
 			<div
