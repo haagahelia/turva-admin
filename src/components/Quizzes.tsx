@@ -62,7 +62,7 @@ const Quizzes = () => {
 
 			<ul className='bg-white rounded-md py-2 my-3'>
 				<button
-					className='items-center bg-blue-500 rounded p-1.5 m-2 text-white ml-3 hover:cursor-pointer'
+					className='items-center bg-blue-500 rounded p-1.5 m-2 text-white ml-3 hover:cursor-pointer hover:bg-blue-600'
 					onClick={onNewQuizClick}
 				>
 					+ Create New Quiz
