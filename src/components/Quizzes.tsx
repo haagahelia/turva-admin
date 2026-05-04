@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { formatDate } from '../util/Dateparser';
 import { faTrashCan, faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { words } from '../constants';
+import { quizPageWords } from '../constants';
 
 interface QuizTypes {
 	quiz_id: number;
@@ -48,13 +48,15 @@ const Quizzes = () => {
 		/* TODO implement editing funtionality */
 	};
 
+	// TODO Worlds & Quizzes use basically the same tsx. In the future abstract it and make it reusable between components
+
 	return (
 		<section className='flex flex-col'>
 			<div
 				role='header'
 				className='h-10 w-full bg-transparent text-2xl font-semibold font-sans'
 			>
-				Quiz controll center
+				Quiz control center
 			</div>
 			{error ?
 				<p className='mt-2 text-sm text-red-700'>{error}</p>
@@ -62,14 +64,14 @@ const Quizzes = () => {
 
 			<ul className='bg-white rounded-md py-2 my-3'>
 				<button
-					className='items-center bg-blue-500 rounded p-1.5 m-2 text-white ml-3 hover:cursor-pointer'
+					className='items-center bg-blue-500 rounded p-1.5 m-2 text-white ml-3 hover:cursor-pointer hover:bg-blue-600'
 					onClick={onNewQuizClick}
 				>
 					+ Create New Quiz
 				</button>
 
 				<div role='name-bar' className='quiz-grid quiz-grid-header'>
-					{words.map((word) => (
+					{quizPageWords.map((word) => (
 						<span>{word.name}</span>
 					))}
 				</div>

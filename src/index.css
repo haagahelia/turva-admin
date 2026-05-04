@@ -10,6 +10,10 @@ body {
 		@apply grid items-center gap-4 p-2;
 		grid-template-columns: minmax(0, 4fr) 80px 100px 200px 80px;
 	}
+	.quiz-grid-worlds {
+		@apply grid items-center gap-4 p-2;
+		grid-template-columns: minmax(0, 4fr) 80px 200px 100px;
+	}
 
 	.quiz-grid-header {
 		@apply my-3 bg-gray-600 text-white text-base font-normal;

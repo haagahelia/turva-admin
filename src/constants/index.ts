@@ -13,12 +13,18 @@ const navLinks = [
 	},
 ];
 
-const words = [
+const quizPageWords = [
 	{ name: 'Name' },
 	{ name: 'Id' },
 	{ name: 'World Id' },
 	{ name: 'Created At' },
 	{ name: 'Actions' },
 ];
+const worldPageWords = [
+	{ name: 'Name' },
+	{ name: 'Id' },
+	{ name: 'Created At' },
+	{ name: 'Actions' },
+];
 
-export { navLinks, words };
+export { navLinks, quizPageWords, worldPageWords };
