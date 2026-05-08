@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
+import EntityList, { type EntityColumn } from '../components/EntityList';
 import { formatDate } from '../util/Dateparser';
-import { faTrashCan, faPenToSquare } from '@fortawesome/free-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { quizPageWords } from '../constants';
 
 interface QuizTypes {
 	quiz_id: number;
@@ -18,6 +16,26 @@ interface QuizTypes {
 const Quizzes = () => {
 	const [quizzes, setQuizzes] = useState<QuizTypes[]>([]);
 	const [error, setError] = useState<string | null>(null);
+
+	const quizColumns: EntityColumn<QuizTypes>[] = [
+		{
+			header: 'Name',
+			render: (quiz) => quiz.quiz_name_en,
+			cellClassName: 'quiz-name-cell',
+		},
+		{
+			header: 'Id',
+			render: (quiz) => quiz.quiz_id,
+		},
+		{
+			header: 'World Id',
+			render: (quiz) => quiz.world_id,
+		},
+		{
+			header: 'Created At',
+			render: (quiz) => formatDate(quiz.created_at),
+		},
+	];
 
 	const fetchQuizzes = () => {
 		fetch('/api/quiz')
@@ -48,71 +66,20 @@ const Quizzes = () => {
 		/* TODO implement editing funtionality */
 	};
 
-	// TODO Worlds & Quizzes use basically the same tsx. In the future abstract it and make it reusable between components
-
 	return (
 		<section className='flex flex-col'>
-			<div
-				role='header'
-				className='h-10 w-full bg-transparent text-2xl font-semibold font-sans'
-			>
-				Quiz control center
-			</div>
-			{error ?
-				<p className='mt-2 text-sm text-red-700'>{error}</p>
-			:	null}
-
-			<ul className='bg-white rounded-md py-2 my-3'>
-				<button
-					className='items-center bg-blue-500 rounded p-1.5 m-2 text-white ml-3 hover:cursor-pointer hover:bg-blue-600'
-					onClick={onNewQuizClick}
-				>
-					+ Create New Quiz
-				</button>
-
-				<div role='name-bar' className='quiz-grid quiz-grid-header'>
-					{quizPageWords.map((word) => (
-						<span>{word.name}</span>
-					))}
-				</div>
-				{quizzes.map((quiz) => (
-					<li key={quiz.quiz_id} className='flex flex-col w-full h-16'>
-						<div className='quiz-grid'>
-							<span className='quiz-name-cell'>{quiz.quiz_name_en}</span>
-							<span className='quiz-cell'>{quiz.quiz_id}</span>
-							<span className='quiz-cell'>{quiz.world_id}</span>
-							<span className='quiz-cell'>{formatDate(quiz.created_at)}</span>
-							<div className='quiz-actions'>
-								<button
-									type='button'
-									aria-label='Delete'
-									className='quiz-action-btn'
-									onClick={onDeleteClick}
-								>
-									<FontAwesomeIcon
-										icon={faTrashCan}
-										style={{ color: 'rgb(250,24,44)', scale: 1.25 }}
-									/>
-									<span className='quiz-action-tooltip'>Delete</span>
-								</button>
-								<button
-									type='button'
-									aria-label='Edit'
-									className='quiz-action-btn'
-									onClick={onEditClick}
-								>
-									<FontAwesomeIcon
-										icon={faPenToSquare}
-										style={{ color: 'rgb(116,192,252)', scale: 1.25 }}
-									/>
-									<span className='quiz-action-tooltip'>Edit</span>
-								</button>
-							</div>
-						</div>
-						<div className='mt-2 h-px w-full bg-slate-400' />
-					</li>
-				))}
-			</ul>
+			<EntityList
+				title={'Quiz control center'}
+				error={error}
+				buttonText={'+ Create New Quiz'}
+				onCreate={onNewQuizClick}
+				data={quizzes}
+				columns={quizColumns}
+				getKey={(quiz) => quiz.quiz_id}
+				gridClassName='quiz-grid'
+				onDelete={onDeleteClick}
+				onEdit={onEditClick}
+			/>
 		</section>
 	);
 };
