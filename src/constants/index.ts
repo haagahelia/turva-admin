@@ -8,8 +8,8 @@ const navLinks = [
 		link: '/worlds',
 	},
 	{
-		name: 'Users',
-		link: '/users',
+		name: 'Crisis team',
+		link: '/crisis-team',
 	},
 ];
 
