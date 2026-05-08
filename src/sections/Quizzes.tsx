@@ -21,7 +21,7 @@ const Quizzes = () => {
 		{
 			header: 'Name',
 			render: (quiz) => quiz.quiz_name_en,
-			cellClassName: 'quiz-name-cell',
+			cellClassName: 'entity-name-cell',
 		},
 		{
 			header: 'Id',

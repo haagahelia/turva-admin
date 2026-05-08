@@ -19,31 +19,31 @@ body {
 		grid-template-columns: minmax(0, 2fr) 130px 200px 100px 200px 80px;
 	}
 
-	.quiz-grid-header {
+	.entity-grid-header {
 		@apply my-3 bg-gray-600 text-white text-base font-normal;
 	}
 
-	.quiz-cell {
+	.entity-cell {
 		@apply font-medium text-base;
 	}
 
-	.quiz-name-cell {
+	.entity-name-cell {
 		@apply font-medium text-base truncate;
 	}
 
-	.quiz-actions {
+	.entity-actions {
 		@apply flex gap-3;
 	}
 
-	.quiz-action-btn {
+	.entity-action-btn {
 		@apply relative cursor-pointer;
 	}
 
-	.quiz-action-tooltip {
+	.entity-action-tooltip {
 		@apply pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 rounded bg-slate-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity;
 	}
 
-	.quiz-action-btn:hover .quiz-action-tooltip {
+	.entity-action-btn:hover .entity-action-tooltip {
 		@apply opacity-100;
 	}
 }

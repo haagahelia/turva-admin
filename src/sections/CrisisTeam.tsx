@@ -23,7 +23,7 @@ const CrisisTeam = () => {
 		{
 			header: 'Name',
 			render: (member) => member.name_en,
-			cellClassName: 'quiz-name-cell',
+			cellClassName: 'entity-name-cell',
 		},
 		{
 			header: 'Contact Id',

@@ -45,7 +45,7 @@ const EntityList = <T,>(props: EntityListProps<T>) => {
 
 				<div
 					role='name-bar'
-					className={`${props.gridClassName} quiz-grid-header`}
+					className={`${props.gridClassName} entity-grid-header`}
 				>
 					{props.columns.map((column) => (
 						<span key={column.header}>{column.header}</span>
@@ -58,35 +58,35 @@ const EntityList = <T,>(props: EntityListProps<T>) => {
 							{props.columns.map((column) => (
 								<span
 									key={column.header}
-									className={column.cellClassName ?? 'quiz-cell'}
+									className={column.cellClassName ?? 'entity-cell'}
 								>
 									{column.render(item)}
 								</span>
 							))}
-							<div className='quiz-actions'>
+							<div className='entity-actions'>
 								<button
 									type='button'
 									aria-label='Delete'
-									className='quiz-action-btn'
+									className='entity-action-btn'
 									onClick={() => props.onDelete(item)}
 								>
 									<FontAwesomeIcon
 										icon={faTrashCan}
 										style={{ color: 'rgb(250,24,44)', scale: 1.25 }}
 									/>
-									<span className='quiz-action-tooltip'>Delete</span>
+									<span className='entity-action-tooltip'>Delete</span>
 								</button>
 								<button
 									type='button'
 									aria-label='Edit'
-									className='quiz-action-btn'
+									className='entity-action-btn'
 									onClick={() => props.onEdit(item)}
 								>
 									<FontAwesomeIcon
 										icon={faPenToSquare}
 										style={{ color: 'rgb(116,192,252)', scale: 1.25 }}
 									/>
-									<span className='quiz-action-tooltip'>Edit</span>
+									<span className='entity-action-tooltip'>Edit</span>
 								</button>
 							</div>
 						</div>

@@ -19,7 +19,7 @@ const Worlds = () => {
 		{
 			header: 'Name',
 			render: (world) => world.world_name_en,
-			cellClassName: 'quiz-name-cell',
+			cellClassName: 'entity-name-cell',
 		},
 		{
 			header: 'Id',
