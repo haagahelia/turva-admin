@@ -51,13 +51,13 @@ const Worlds = () => {
 	}, []);
 
 	const onNewWorldClick = (): void => {
-		/* TODO implement new quiz addition */
+		/* TODO implement new worlds addition */
 	};
 	const onDeleteClick = (): void => {
-		/* TODO implement Deletion functionality */
+		/* TODO implement Deletion functionality for worlds */
 	};
 	const onEditClick = (): void => {
-		/* TODO implement editing funtionality */
+		/* TODO implement editing funtionality for worlds */
 	};
 
 	return (
@@ -70,7 +70,7 @@ const Worlds = () => {
 				data={worlds}
 				columns={worldColumns}
 				getKey={(world) => world.world_id}
-				gridClassName='quiz-grid-worlds'
+				gridClassName='world-grid'
 				onDelete={onDeleteClick}
 				onEdit={onEditClick}
 			/>

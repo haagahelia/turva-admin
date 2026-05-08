@@ -60,10 +60,10 @@ const Quizzes = () => {
 		/* TODO implement new quiz addition */
 	};
 	const onDeleteClick = (): void => {
-		/* TODO implement Deletion functionality */
+		/* TODO implement Deletion functionality for quizzes*/
 	};
 	const onEditClick = (): void => {
-		/* TODO implement editing funtionality */
+		/* TODO implement editing funtionality for quizzes*/
 	};
 
 	return (

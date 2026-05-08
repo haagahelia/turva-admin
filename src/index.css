@@ -10,9 +10,13 @@ body {
 		@apply grid items-center gap-4 p-2;
 		grid-template-columns: minmax(0, 4fr) 80px 100px 200px 80px;
 	}
-	.quiz-grid-worlds {
+	.world-grid {
 		@apply grid items-center gap-4 p-2;
 		grid-template-columns: minmax(0, 4fr) 80px 200px 100px;
+	}
+	.crisis-team-grid {
+		@apply grid items-center gap-4 p-2;
+		grid-template-columns: minmax(0, 2fr) 130px 200px 100px 200px 80px;
 	}
 
 	.quiz-grid-header {
