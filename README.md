@@ -1,15 +1,31 @@
 # Turva-admin
 
-Administrative frontend for the TurvaOppi project.
+Turva-admin is the administrative frontend for the TurvaOppi project. It provides a dashboard-style interface for browsing the core content used by the platform.
+
+## What the app does
+
+- Shows a persistent side navigation for the main admin areas.
+- Routes between three management views: quizzes, worlds, and crisis team members.
+- Loads data from backend API endpoints and displays it in shared table-like entity lists.
+- Formats creation timestamps for easier scanning.
+- Shows API errors in the view so failed requests are visible to admins.
+- Includes row-level edit and delete actions in the UI shell, with creation flows still marked as TODO in the current implementation.
+
+## Current Views
+
+- Quizzes: reads quiz records from `/api/quiz`.
+- Worlds: reads world records from `/api/world`.
+- Crisis team: reads crisis team contact records from `/api/crisis-team`.
 
 ## Tech Stack
 
 - React 19
 - TypeScript
 - Vite
-- Tailwind CSS V4
-- `react-hook-form`
-- `zod`
+- React Router
+- Tailwind CSS v4
+- react-hook-form
+- zod
 
 ## Prerequisites
 
@@ -51,9 +67,12 @@ npm run lint
 ## Project Structure
 
 - `src/main.tsx` bootstraps the application.
-- `src/App.tsx` contains the root app component.
-- `src/index.css` is imported globally.
+- `src/App.tsx` defines the dashboard layout and route handling.
+- `src/components/Sidepanel.tsx` renders the persistent navigation.
+- `src/components/EntityList.tsx` renders the shared entity table layout.
+- `src/sections/` contains the individual admin views.
+- `src/util/Dateparser.ts` provides date formatting for list rows.
 
-## Status
+## Notes
 
-This repository currently contains the initial Vite scaffold and a placeholder `App` component.
+The current app is a functional admin shell rather than a fully complete CRUD tool. The list views are wired to backend reads, while create, edit, and delete flows still need implementation.
