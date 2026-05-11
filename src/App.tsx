@@ -1,8 +1,8 @@
-import Quizzes from './components/Quizzes';
+import Quizzes from './sections/Quizzes';
 import Sidepanel from './components/Sidepanel';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import Users from './components/Users';
-import Worlds from './components/Worlds';
+import Worlds from './sections/Worlds';
+import CrisisTeam from './sections/CrisisTeam';
 
 function App() {
 	return (
@@ -13,7 +13,7 @@ function App() {
 					<Route path='/' element={<Navigate to='/quizzes' replace />} />
 					<Route path='/quizzes' element={<Quizzes />} />
 					<Route path='/worlds' element={<Worlds />} />
-					<Route path='/users' element={<Users />} />
+					<Route path='/crisis-team' element={<CrisisTeam />} />
 					<Route path='*' element={<Navigate to='/quizzes' replace />} />
 				</Routes>
 			</main>

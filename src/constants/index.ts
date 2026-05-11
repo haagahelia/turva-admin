@@ -8,23 +8,23 @@ const navLinks = [
 		link: '/worlds',
 	},
 	{
-		name: 'Users',
-		link: '/users',
+		name: 'Crisis team',
+		link: '/crisis-team',
 	},
 ];
 
-const quizPageWords = [
+const quizHeaders = [
 	{ name: 'Name' },
 	{ name: 'Id' },
 	{ name: 'World Id' },
 	{ name: 'Created At' },
 	{ name: 'Actions' },
 ];
-const worldPageWords = [
+const worldHeaders = [
 	{ name: 'Name' },
 	{ name: 'Id' },
 	{ name: 'Created At' },
 	{ name: 'Actions' },
 ];
 
-export { navLinks, quizPageWords, worldPageWords };
+export { navLinks, quizHeaders, worldHeaders };
