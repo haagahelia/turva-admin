@@ -2,6 +2,10 @@
 
 Turva-admin is the administrative frontend for the TurvaOppi project. It provides a dashboard-style interface for browsing the core content used by the platform.
 
+## For Future Developers
+
+See the detailed implementation handoff in [ProjectGuide.md](ProjectGuide.md).
+
 ## What the app does
 
 - Shows a persistent side navigation for the main admin areas.
