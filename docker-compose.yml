@@ -1,0 +1,15 @@
+services:
+  admin:
+    container_name: turva-admin
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    ports:
+      - "8080:8080"
+
+    # Linux users: makes host.docker.internal (used by the DEV proxy in nginx.conf) reach your PC
+    # Docker Desktop on Windows/macOS already provides it
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
