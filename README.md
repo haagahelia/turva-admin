@@ -35,6 +35,7 @@ See the detailed implementation handoff in [ProjectGuide.md](ProjectGuide.md).
 
 - Node.js 20 or newer
 - npm
+- [Docker](https://docs.docker.com/) (only for running the app in a container)
 
 ## Getting Started
 
@@ -67,6 +68,36 @@ Run linting:
 ```bash
 npm run lint
 ```
+
+## Running with Docker
+
+The Docker image builds the app and serves it with nginx on port 8080. nginx also forwards `/api` requests to turva-back, like the Vite dev proxy does with `npm run dev`.
+
+1. Clone the repository
+
+    ```bash
+    git clone https://github.com/haagahelia/turva-admin.git
+    cd turva-admin
+    ```
+
+2. Choose which backend to use in `nginx.conf`
+
+    - **DEV** (active by default): turva-back running locally on port 3000. Start it first with `docker compose up` in the turva-back repository.
+    - **PROD**: turva-back on Rahti.
+
+    Keep only one of the two `location /api/` blocks uncommented.
+
+3. Build and run the project
+
+    ```bash
+    docker compose up --build
+    ```
+
+4. Open [http://localhost:8080](http://localhost:8080)
+
+Stop the container with `docker compose down`.
+
+> Switch `nginx.conf` back to **PROD** before deploying to Rahti. Rahti builds the image from the `Dockerfile` and does not use `docker-compose.yml`.
 
 ## Project Structure
 
