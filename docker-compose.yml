@@ -9,7 +9,12 @@ services:
     ports:
       - "8080:8080"
 
-    # Linux users: makes host.docker.internal (used by the DEV proxy in nginx.conf) reach your PC
+    # Local dev: use turva-back running on your PC instead of the Rahti default
+    # host.docker.internal = PC as seen from inside the container
+    environment:
+      BACKEND_URL: http://host.docker.internal:3000
+
+    # Linux users: makes host.docker.internal reach your PC
     # Docker Desktop on Windows/macOS already provides it
     extra_hosts:
       - "host.docker.internal:host-gateway"
