@@ -6,13 +6,10 @@ services:
       context: .
       dockerfile: Dockerfile
 
+    env_file: .env
+
     ports:
       - "8080:8080"
-
-    # Local dev: use turva-back running on your PC instead of the Rahti default
-    # host.docker.internal = PC as seen from inside the container
-    environment:
-      BACKEND_URL: http://host.docker.internal:3000
 
     # Linux users: makes host.docker.internal reach your PC
     # Docker Desktop on Windows/macOS already provides it

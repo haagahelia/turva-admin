@@ -11,6 +11,3 @@ FROM nginxinc/nginx-unprivileged:stable-alpine
 # The image fills in ${BACKEND_URL} from templates/ at startup
 COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 COPY --from=build /app/dist /usr/share/nginx/html
-# Default backend: turva-back on Rahti
-ENV BACKEND_URL=https://turva-back-turva-back.2.rahtiapp.fi
-EXPOSE 8080

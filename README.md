@@ -80,20 +80,22 @@ The Docker image builds the app and serves it with nginx on port 8080. nginx als
     cd turva-admin
     ```
 
-2. Start turva-back locally on port 3000 (`docker compose up` in the turva-back repository)
+1. create the .env file and write "BACKEND_URL=http://host.docker.internal:3000"
+
+1. Start turva-back locally on port 3000 (`docker compose up` in the turva-back repository)
 
     The backend is chosen with the `BACKEND_URL` environment variable:
 
-    - The image defaults to turva-back on Rahti, so a Rahti deployment needs no config change.
-    - `docker-compose.yml` overrides it with `http://host.docker.internal:3000` for local development.
+    - Rathi deployment needs seret variable with the same name.
+    - `docker-compose.yml` will use the .env file variables.
 
-3. Build and run the project
+1. Build and run the project
 
     ```bash
     docker compose up --build
     ```
 
-4. Open [http://localhost:8080](http://localhost:8080)
+1. Open [http://localhost:8080](http://localhost:8080)
 
 Stop the container with `docker compose down`.
 
