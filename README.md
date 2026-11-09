@@ -105,8 +105,6 @@ The Docker image builds the app and serves it with nginx on port 8080. nginx als
 
 Stop the container with `docker compose down`.
 
-> Switch `nginx.conf` back to **PROD** before deploying to Rahti. Rahti builds the image from the `Dockerfile` and does not use `docker-compose.yml`.
-
 ## Project Structure
 
 - `src/main.tsx` bootstraps the application.
