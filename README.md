@@ -69,6 +69,12 @@ Run linting:
 npm run lint
 ```
 
+Run the tests (Vitest + React Testing Library, see the Testing section of [ProjectGuide.md](ProjectGuide.md)):
+
+```bash
+npm test
+```
+
 ## Running with Docker
 
 The Docker image builds the app and serves it with nginx on port 8080. nginx also forwards `/api` requests to turva-back, like the Vite dev proxy does with `npm run dev`.
@@ -108,6 +114,7 @@ Stop the container with `docker compose down`.
 - `src/components/Sidepanel.tsx` renders the persistent navigation.
 - `src/components/EntityList.tsx` renders the shared entity table layout.
 - `src/sections/` contains the individual admin views.
+- `src/hooks/useFetch.ts` loads list data from the API for the views.
 - `src/util/Dateparser.ts` provides date formatting for list rows.
 
 ## Notes
