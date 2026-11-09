@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import EntityList, { type EntityColumn } from '../components/EntityList';
+import { useFetch } from '../hooks/useFetch';
 import { formatDate } from '../util/Dateparser';
 
 interface QuizTypes {
@@ -14,8 +14,7 @@ interface QuizTypes {
 }
 
 const Quizzes = () => {
-	const [quizzes, setQuizzes] = useState<QuizTypes[]>([]);
-	const [error, setError] = useState<string | null>(null);
+	const { data: quizzes, error } = useFetch<QuizTypes>('/api/quiz');
 
 	const quizColumns: EntityColumn<QuizTypes>[] = [
 		{
@@ -36,25 +35,6 @@ const Quizzes = () => {
 			render: (quiz) => formatDate(quiz.created_at),
 		},
 	];
-
-	const fetchQuizzes = () => {
-		fetch('/api/quiz')
-			.then((response) => {
-				if (!response.ok) {
-					throw new Error(
-						`Request failed with ${response.status}: ${response.statusText}`,
-					);
-				}
-
-				return response.json();
-			})
-			.then((data) => setQuizzes(data))
-			.catch((fetchError: Error) => setError(fetchError.message));
-	};
-
-	useEffect(() => {
-		fetchQuizzes();
-	}, []);
 
 	const onNewQuizClick = (): void => {
 		/* TODO implement new quiz addition */
