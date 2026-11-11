@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import EntityList, { type EntityColumn } from '../components/EntityList';
+import { useFetch } from '../hooks/useFetch';
 import { formatDate } from '../util/Dateparser';
 
 interface CrisisTeamTypes {
@@ -16,8 +16,8 @@ interface CrisisTeamTypes {
 }
 
 const CrisisTeam = () => {
-	const [teamMembers, setTeamMembers] = useState<CrisisTeamTypes[]>([]);
-	const [error, setError] = useState<string | null>(null);
+	const { data: teamMembers, error } =
+		useFetch<CrisisTeamTypes>('/api/crisis-team');
 
 	const crisisTeamColumns: EntityColumn<CrisisTeamTypes>[] = [
 		{
@@ -42,25 +42,6 @@ const CrisisTeam = () => {
 			render: (member) => formatDate(member.created_at),
 		},
 	];
-
-	const fetchQuizzes = () => {
-		fetch('/api/crisis-team')
-			.then((response) => {
-				if (!response.ok) {
-					throw new Error(
-						`Request failed with ${response.status}: ${response.statusText}`,
-					);
-				}
-
-				return response.json();
-			})
-			.then((data) => setTeamMembers(data))
-			.catch((fetchError: Error) => setError(fetchError.message));
-	};
-
-	useEffect(() => {
-		fetchQuizzes();
-	}, []);
 
 	const onNewMemberClick = (): void => {
 		/* TODO implement new crisis team member addition */

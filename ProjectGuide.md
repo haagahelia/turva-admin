@@ -42,7 +42,9 @@ The application is organized as a small routed dashboard:
 - [src/components/Sidepanel.tsx](src/components/Sidepanel.tsx) renders the persistent navigation and account area.
 - [src/components/EntityList.tsx](src/components/EntityList.tsx) renders the reusable list layout.
 - [src/sections/](src/sections) contains the page-level data views.
+- [src/hooks/useFetch.ts](src/hooks/useFetch.ts) loads a list from an API endpoint and exposes the data and any error.
 - [src/util/Dateparser.ts](src/util/Dateparser.ts) formats timestamps for display.
+- [src/test/](src/test) contains the shared test setup and the `mockFetch` helper.
 
 The main design idea is reuse. Each section fetches data, defines its columns, and hands everything to `EntityList`.
 
@@ -77,7 +79,7 @@ The app reads from the following backend endpoints:
 - `/api/world`
 - `/api/crisis-team`
 
-The request pattern is intentionally simple: each section issues a `fetch` call in `useEffect`, checks `response.ok`, converts the response to JSON, and stores the result in local state.
+The request pattern is intentionally simple: each section calls the shared `useFetch(url)` hook, which issues a `fetch` call in `useEffect`, checks `response.ok`, converts the response to JSON, and returns `{ data, error }`.
 
 If the backend contract changes, update the relevant section component and the proxy target in [vite.config.ts](vite.config.ts) together.
 
@@ -89,6 +91,7 @@ If the backend contract changes, update the relevant section component and the p
 - `src/sections/Quizzes.tsx` fetches and displays quiz data.
 - `src/sections/Worlds.tsx` fetches and displays world data.
 - `src/sections/CrisisTeam.tsx` fetches and displays crisis team data.
+- `src/hooks/useFetch.ts` contains the shared request and error handling used by every section.
 - `src/util/Dateparser.ts` formats timestamps for display.
 
 ## Data Model Notes
@@ -107,8 +110,8 @@ Those types suggest that soft-deletion is part of the backend model, even though
 
 Each section follows the same pattern:
 
-1. Declare local state for the list data and any fetch error.
-2. Fetch data from the relevant API endpoint in `useEffect`.
+1. Call `useFetch<Type>('/api/...')` to get the list data and any fetch error.
+2. Define the column definitions for the view.
 3. Pass the data into `EntityList` together with column definitions.
 4. Render the row-level edit and delete buttons through the shared component.
 
@@ -137,8 +140,7 @@ The current list component also includes a create button, but the handler it rec
 1. Decide how soft-deleted records should be handled in the UI.
 1. Replace the placeholder navigation footer with real user data and logout handling.
 1. Add a proper 404 page instead of redirecting unknown URLs to `/quizzes`.
-1. Consider extracting the repeated fetch logic into a shared hook or service layer.
-1. Add automated tests for the shared entity list component and for the individual section screens.
+1. Add end-to-end browser tests (Playwright) on top of the existing unit and component tests.
 
 ## Extension Guide
 
@@ -146,7 +148,7 @@ When adding a new admin view:
 
 1. Create a new section component under `src/sections/`.
 1. Define the view-specific columns in that section.
-1. Fetch the data from the appropriate `/api/...` endpoint.
+1. Fetch the data from the appropriate `/api/...` endpoint with `useFetch`.
 1. Pass the data and handlers into `EntityList`.
 1. Add the route in [src/App.tsx](src/App.tsx).
 1. Add a matching navigation item in `src/constants/index.ts`.
@@ -159,20 +161,33 @@ When changing an existing view:
 
 ## Testing
 
-There is no automated test suite in place yet, so this should be treated as a priority for future development.
+Unit and component tests use [Vitest](https://vitest.dev/) with [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) in a jsdom environment. They run in CI on every push and pull request to `main`.
 
-Recommended approach:
+```bash
+npm test            # run all tests once
+npm run test:watch  # re-run tests on file changes
+npm run coverage    # run tests and write a coverage report to coverage/
+```
 
-- Use Playwright for end-to-end browser testing of the admin UI.
-- Use Robot Framework if the team wants a keyword-driven acceptance-testing layer that is easier for non-developers to read and maintain.
+How the tests are organised:
 
-Suggested coverage:
+- Test files live next to the code they test and end in `.test.ts` or `.test.tsx`.
+- [src/test/setup.ts](src/test/setup.ts) loads the `jest-dom` matchers (`toBeInTheDocument`, ...) and cleans up after each test.
+- [src/test/mockFetch.ts](src/test/mockFetch.ts) replaces `fetch` with a stub that answers by URL. Tests never call the real backend.
+- Tests run with `TZ=UTC` (set in [vite.config.ts](vite.config.ts)) so date output does not depend on the machine's time zone.
+- Prefer queries by role and accessible name (`getByRole('heading', { name: ... })`) over CSS classes, so tests survive styling changes.
 
-- Verify that the side navigation routes to all three views.
-- Verify that each view renders data fetched from its API endpoint.
-- Verify error handling when an API request fails.
-- Verify the shared entity list actions and any future create/edit/delete flows.
-- Verify the default redirect from `/` to `/quizzes`.
+Current coverage:
+
+- `useFetch`: successful load, HTTP error status, network failure.
+- `EntityList`: title, column headers, rows, empty list, error message, create/edit/delete callbacks.
+- `formatDate`: valid and invalid input.
+- `App`: redirects from `/` and unknown paths, side navigation, active link, and each view's data and error states.
+
+Next steps:
+
+- Add Playwright end-to-end tests that run the built app in a real browser with a mocked API.
+- Add tests for the create, edit and delete flows when they are implemented.
 
 ## Development Tips
 

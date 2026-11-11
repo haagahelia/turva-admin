@@ -28,5 +28,8 @@ jobs:
       - name: Linting
         run: npm run lint
 
+      - name: Unit and component tests
+        run: npm test
+
       - name: Build
         run: npm run build

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import EntityList, { type EntityColumn } from '../components/EntityList';
+import { useFetch } from '../hooks/useFetch';
 import { formatDate } from '../util/Dateparser';
 
 interface WorldTypes {
@@ -12,8 +12,7 @@ interface WorldTypes {
 }
 
 const Worlds = () => {
-	const [worlds, setWorlds] = useState<WorldTypes[]>([]);
-	const [error, setError] = useState<string | null>(null);
+	const { data: worlds, error } = useFetch<WorldTypes>('/api/world');
 
 	const worldColumns: EntityColumn<WorldTypes>[] = [
 		{
@@ -30,25 +29,6 @@ const Worlds = () => {
 			render: (world) => formatDate(world.created_at),
 		},
 	];
-
-	const fetchWorlds = () => {
-		fetch('/api/world')
-			.then((response) => {
-				if (!response.ok) {
-					throw new Error(
-						`Request failed with ${response.status}: ${response.statusText}`,
-					);
-				}
-
-				return response.json();
-			})
-			.then((data) => setWorlds(data))
-			.catch((fetchError: Error) => setError(fetchError.message));
-	};
-
-	useEffect(() => {
-		fetchWorlds();
-	}, []);
 
 	const onNewWorldClick = (): void => {
 		/* TODO implement new worlds addition */

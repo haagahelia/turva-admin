@@ -25,12 +25,9 @@ interface EntityListProps<T = unknown> {
 const EntityList = <T,>(props: EntityListProps<T>) => {
 	return (
 		<>
-			<div
-				role='header'
-				className='h-10 w-full bg-transparent text-2xl font-semibold font-sans'
-			>
+			<h1 className='h-10 w-full bg-transparent text-2xl font-semibold font-sans'>
 				{props.title}
-			</div>
+			</h1>
 			{props.error ?
 				<p className='mt-2 text-sm text-red-700'>{props.error}</p>
 			:	null}
@@ -43,10 +40,7 @@ const EntityList = <T,>(props: EntityListProps<T>) => {
 					{props.buttonText}
 				</button>
 
-				<div
-					role='name-bar'
-					className={`${props.gridClassName} entity-grid-header`}
-				>
+				<div className={`${props.gridClassName} entity-grid-header`}>
 					{props.columns.map((column) => (
 						<span key={column.header}>{column.header}</span>
 					))}
