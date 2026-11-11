@@ -1,7 +1,10 @@
 import { NavLink } from 'react-router-dom';
 import { navLinks } from '../constants';
+import { useAuth } from '../auth/authContext';
 
 const Sidepanel = () => {
+	const { profile, logout } = useAuth();
+
 	return (
 		<section className='sm:w-60 lg:w-80 shrink-0 flex flex-col h-dvh bg-[#273444]'>
 			<div className='h-20 py-3 flex flex-col items-center justify-center'>
@@ -25,12 +28,18 @@ const Sidepanel = () => {
 			</ul>
 
 			<div className='mt-auto w-full flex justify-between items-center h-20 p-2'>
-				<div className='flex items-center gap-1.5'>
+				<div className='flex min-w-0 items-center gap-1.5'>
 					{/* Placeholder for an admin image */}
-					<div className='bg-gray-400 rounded-full w-12.5 h-12.5' />
-					<span className='text-white font-normal'>Main User</span>
+					<div className='bg-gray-400 rounded-full w-12.5 h-12.5 shrink-0' />
+					<span className='truncate text-white font-normal' title={profile?.email}>
+						{profile?.profileName}
+					</span>
 				</div>
-				<button className='text-white px-3 py-1.5 transition-all hover:bg-amber-50/10 rounded-2xl'>
+				<button
+					type='button'
+					onClick={logout}
+					className='text-white px-3 py-1.5 transition-all hover:cursor-pointer hover:bg-amber-50/10 rounded-2xl'
+				>
 					Logout
 				</button>
 			</div>
