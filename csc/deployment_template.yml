@@ -1,0 +1,84 @@
+# Rahti (OpenShift) resources for turva-admin.
+# Applied by .github/workflows/cd.yml with envsubst, which fills in
+# ${CSC_PROJECT}, ${COMMIT_SHA} and ${BACKEND_URL}. No secrets in here.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: turva-admin
+  labels:
+    app: turva-admin
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: turva-admin
+  template:
+    metadata:
+      labels:
+        app: turva-admin
+    spec:
+      containers:
+        - name: turva-admin
+          image: image-registry.openshift-image-registry.svc:5000/${CSC_PROJECT}/turva-admin:${COMMIT_SHA}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            # Read by nginx.conf.template at container start
+            - name: BACKEND_URL
+              value: "${BACKEND_URL}"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: turva-admin
+  labels:
+    app: turva-admin
+spec:
+  selector:
+    app: turva-admin
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+      protocol: TCP
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: turva-admin
+  labels:
+    app: turva-admin
+spec:
+  to:
+    kind: Service
+    name: turva-admin
+    weight: 100
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
