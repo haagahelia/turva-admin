@@ -12,7 +12,7 @@ It focuses on what is already implemented, where the data comes from, how the ap
 - It currently works as a read-focused dashboard for browsing backend data.
 - The app uses a shared list component for the current admin views.
 - Backend requests are proxied through the Vite development server.
-- Write-side workflows, authentication, and automated tests are still incomplete.
+- Write-side workflows (create, edit, delete) are still incomplete.
 
 ## Setup
 
@@ -43,6 +43,9 @@ The application is organized as a small routed dashboard:
 - [src/components/EntityList.tsx](src/components/EntityList.tsx) renders the reusable list layout.
 - [src/sections/](src/sections) contains the page-level data views.
 - [src/hooks/useFetch.ts](src/hooks/useFetch.ts) loads a list from an API endpoint and exposes the data and any error.
+- [src/pages/Login.tsx](src/pages/Login.tsx) is the two-step sign-in page.
+- [src/auth/](src/auth) holds the session (`AuthProvider`, `useAuth`, `RequireAuth`, storage in `session.ts`).
+- [src/api/apiFetch.ts](src/api/apiFetch.ts) is the client for authenticated requests.
 - [src/util/Dateparser.ts](src/util/Dateparser.ts) formats timestamps for display.
 - [src/test/](src/test) contains the shared test setup and the `mockFetch` helper.
 
@@ -82,6 +85,22 @@ The app reads from the following backend endpoints:
 The request pattern is intentionally simple: each section calls the shared `useFetch(url)` hook, which issues a `fetch` call in `useEffect`, checks `response.ok`, converts the response to JSON, and returns `{ data, error }`.
 
 If the backend contract changes, update the relevant section component and the proxy target in [vite.config.ts](vite.config.ts) together.
+
+## Authentication
+
+Every page except `/login` requires a signed-in admin.
+
+1. The admin enters their email and username. `POST /api/auth/login` emails a 6-digit code.
+1. The admin enters the code. `POST /api/auth/verify` returns a JWT (valid 3 days).
+1. The app calls `GET /api/user/profile` with that token and only continues if `role` is `admin`.
+
+The token and profile are stored in `localStorage` (`turva-admin-session`) so a reload or a new tab stays signed in. An expired token is dropped on load and checked every minute.
+
+For write requests, use `apiFetch` from [src/api/apiFetch.ts](src/api/apiFetch.ts): it adds the `Authorization: Bearer <token>` header, sends JSON, and throws an `ApiError` with the backend's `error` message. If the backend answers 401, the session ends and the login page says the session expired.
+
+To give someone admin access, set `role = 'admin'` for their user in the database (see the turva-back README).
+
+**React Compiler and forms:** read form errors with `useFormState({ control })` from react-hook-form, not `form.formState`. The compiler caches the render and would not show updated errors otherwise.
 
 ## Important Components
 
@@ -124,7 +143,7 @@ The current list component also includes a create button, but the handler it rec
 - The current implementation expects the backend APIs to be available at the `/api/...` paths.
 - The list views currently use English labels for the visible table content.
 - The delete, edit, and create handlers in the current screens are still TODOs and do not perform real actions yet.
-- The navigation includes a logout button and a placeholder avatar, but neither is wired to real authentication state yet.
+- The navigation shows the signed-in admin's name and a working logout button. The avatar is still a placeholder.
 - The app currently redirects unknown routes back to the quiz page instead of showing a separate 404 page.
 - There are no loading indicators or empty-state messages yet, so an empty table can mean either no data or a pending request.
 - The current UI is intentionally minimal and relies on Tailwind utility classes rather than a component library.
@@ -198,4 +217,4 @@ Next steps:
 
 ## Status
 
-Turva-admin is usable for browsing backend content, but it is not yet a complete administration tool. The remaining work is centered on write operations, authentication, routing polish, and automated testing.
+Turva-admin is usable for browsing backend content, but it is not yet a complete administration tool. The remaining work is centered on write operations and routing polish.
