@@ -1,0 +1,123 @@
+name: CD-Pipeline
+
+# Never cancel a deploy halfway: queue the next one instead.
+concurrency:
+  group: turva-admin-cd
+  cancel-in-progress: false
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  OC_VERSION: 4.15.9
+  OC_SHA256: 5e8c0f976700deb7c328bdccedfd9333a74d293aafcebce1855ecced993685be
+  RAHTI_API: https://api.2.rahti.csc.fi:6443
+  RAHTI_REGISTRY: image-registry.apps.2.rahti.csc.fi
+
+jobs:
+  verify:
+    name: Lint, test and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Linting
+        run: npm run lint
+
+      - name: Unit and component tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+  deploy:
+    name: Build image and deploy to CSC Rahti
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: dev
+    env:
+      CSC_PROJECT: ${{ secrets.CSC_PROJECT }}
+      CSC_TOKEN: ${{ secrets.CSC_TOKEN }}
+      BACKEND_URL: ${{ vars.BACKEND_URL }}
+      COMMIT_SHA: ${{ github.sha }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate required configuration
+        run: |
+          : "${CSC_PROJECT:?Missing secret CSC_PROJECT in the dev environment}"
+          : "${CSC_TOKEN:?Missing secret CSC_TOKEN in the dev environment}"
+          : "${BACKEND_URL:?Missing variable BACKEND_URL in the dev environment}"
+          case "$BACKEND_URL" in
+            http://*|https://*) ;;
+            *) echo "BACKEND_URL must start with http:// or https://"; exit 1 ;;
+          esac
+          case "$BACKEND_URL" in
+            */) echo "BACKEND_URL must not end with a slash, or nginx drops the /api prefix"; exit 1 ;;
+          esac
+
+      - name: Cache CSC Rahti CLI
+        id: cache-oc
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/bin/oc
+          key: openshift-cli-${{ env.OC_VERSION }}-linux-amd64
+
+      - name: Install CSC Rahti CLI
+        if: steps.cache-oc.outputs.cache-hit != 'true'
+        run: |
+          archive="$RUNNER_TEMP/openshift-client.tar.gz"
+          wget -q -O "$archive" "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/$OC_VERSION/openshift-client-linux-$OC_VERSION.tar.gz"
+          echo "$OC_SHA256  $archive" | sha256sum -c -
+          tar -xzf "$archive" -C "$RUNNER_TEMP"
+          mkdir -p "$HOME/.local/bin"
+          mv "$RUNNER_TEMP/oc" "$HOME/.local/bin/oc"
+
+      - name: Add CSC Rahti CLI to PATH
+        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Log in to CSC Rahti
+        run: |
+          oc login --token="$CSC_TOKEN" --server="$RAHTI_API"
+          oc project "$CSC_PROJECT"
+          oc create imagestream turva-admin --dry-run=client -o yaml | oc apply -f -
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        run: |
+          IMAGE="$RAHTI_REGISTRY/$CSC_PROJECT/turva-admin:$COMMIT_SHA"
+          oc whoami -t | docker login --username unused --password-stdin "$RAHTI_REGISTRY"
+          docker buildx build \
+            --tag "$IMAGE" \
+            --cache-from type=gha \
+            --cache-to type=gha,mode=max \
+            --push \
+            .
+
+      - name: Apply deployment
+        run: |
+          # Only substitute our own variables, nothing else in the file
+          envsubst '${CSC_PROJECT} ${COMMIT_SHA} ${BACKEND_URL}' \
+            < csc/deployment_template.yml | oc apply -f -
+          oc rollout status deployment/turva-admin --timeout=300s
+
+      - name: Show public URL
+        run: |
+          host="$(oc get route turva-admin -o jsonpath='{.spec.host}')"
+          echo "turva-admin is deployed at https://$host" >> "$GITHUB_STEP_SUMMARY"
+          echo "https://$host"

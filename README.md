@@ -92,8 +92,9 @@ The Docker image builds the app and serves it with nginx on port 8080. nginx als
 
     The backend is chosen with the `BACKEND_URL` environment variable:
 
-    - Rathi deployment needs seret variable with the same name.
-    - `docker-compose.yml` will use the .env file variables.
+    - `docker-compose.yml` reads it from the `.env` file.
+    - The Rahti deployment gets it from the `BACKEND_URL` GitHub Actions variable (see [Deployment to CSC Rahti](#deployment-to-csc-rahti)).
+    - The container does not start without it.
 
 1. Build and run the project
 
@@ -104,6 +105,27 @@ The Docker image builds the app and serves it with nginx on port 8080. nginx als
 1. Open [http://localhost:8080](http://localhost:8080)
 
 Stop the container with `docker compose down`.
+
+## Deployment to CSC Rahti
+
+The CD workflow ([.github/workflows/cd_workflow.yml](.github/workflows/cd_workflow.yml)) deploys every push to `main` to CSC Rahti. It can also be started by hand from the Actions tab (**Run workflow**).
+
+What it does:
+
+1. Runs lint, tests and build. The deploy only starts if they pass.
+1. Builds the Docker image and pushes it to the Rahti registry, tagged with the commit SHA.
+1. Applies [csc/deployment_template.yml](csc/deployment_template.yml): a `turva-admin` Deployment, Service and HTTPS Route.
+1. Waits for the rollout and prints the public URL in the workflow summary.
+
+Configure the GitHub `dev` environment (**Settings → Environments → dev**) once:
+
+| Name | Type | Value |
+|---|---|---|
+| `CSC_PROJECT` | secret | Rahti project name |
+| `CSC_TOKEN` | secret | Rahti access token |
+| `BACKEND_URL` | variable | turva-back URL, without a trailing slash |
+
+For `BACKEND_URL`, if turva-back runs in the same Rahti project, use its internal service: `http://turva-back:3000`. Otherwise use its public URL, for example `https://turva-back-<project>.2.rahtiapp.fi`. The workflow stops before deploying if a value is missing or malformed.
 
 ## Project Structure
 
