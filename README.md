@@ -8,6 +8,7 @@ See the detailed implementation handoff in [ProjectGuide.md](ProjectGuide.md).
 
 ## What the app does
 
+- Requires an admin sign-in (email code) before any page is shown.
 - Shows a persistent side navigation for the main admin areas.
 - Routes between three management views: quizzes, worlds, and crisis team members.
 - Loads data from backend API endpoints and displays it in shared table-like entity lists.
@@ -135,6 +136,9 @@ For `BACKEND_URL`, if turva-back runs in the same Rahti project, use its interna
 - `src/components/EntityList.tsx` renders the shared entity table layout.
 - `src/sections/` contains the individual admin views.
 - `src/hooks/useFetch.ts` loads list data from the API for the views.
+- `src/pages/Login.tsx` is the sign-in page.
+- `src/auth/` keeps the admin session (token and profile) and protects the routes.
+- `src/api/apiFetch.ts` calls the backend with the admin token and handles errors.
 - `src/util/Dateparser.ts` provides date formatting for list rows.
 
 ## Notes

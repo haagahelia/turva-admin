@@ -1,8 +1,9 @@
-import { render, screen, within } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it } from 'vitest';
 import App from './App';
+import { loadSession } from './auth/session';
+import { logInAsAdmin, makeToken, renderWithAuth } from './test/auth';
 import { mockFetch } from './test/mockFetch';
 
 const quizzes = [
@@ -44,12 +45,51 @@ const crisisTeam = [
 	},
 ];
 
-const renderAt = (path: string) =>
-	render(
-		<MemoryRouter initialEntries={[path]}>
-			<App />
-		</MemoryRouter>,
-	);
+/** Renders the app at `path` as a logged-in admin. */
+const renderAt = (path: string) => {
+	logInAsAdmin();
+	return renderWithAuth(<App />, path);
+};
+
+describe('Authentication', () => {
+	beforeEach(() => {
+		mockFetch({ '/api/quiz': { body: quizzes } });
+	});
+
+	it('redirects to the login page when not logged in', () => {
+		renderWithAuth(<App />, '/worlds');
+
+		expect(
+			screen.getByRole('heading', { name: 'Turva Dashboard' }),
+		).toBeInTheDocument();
+		expect(screen.getByRole('button', { name: 'Send code' })).toBeInTheDocument();
+		expect(screen.queryByRole('link', { name: 'Worlds' })).not.toBeInTheDocument();
+	});
+
+	it('treats an expired stored token as logged out', () => {
+		logInAsAdmin(makeToken(-60));
+		renderWithAuth(<App />, '/quizzes');
+
+		expect(screen.getByRole('button', { name: 'Send code' })).toBeInTheDocument();
+		expect(loadSession()).toBeNull();
+	});
+
+	it("shows the admin's name in the side panel", async () => {
+		renderAt('/quizzes');
+
+		expect(await screen.findByText('Admin User')).toBeInTheDocument();
+	});
+
+	it('logs out and returns to the login page', async () => {
+		const user = userEvent.setup();
+		renderAt('/quizzes');
+
+		await user.click(screen.getByRole('button', { name: 'Logout' }));
+
+		expect(screen.getByRole('button', { name: 'Send code' })).toBeInTheDocument();
+		expect(loadSession()).toBeNull();
+	});
+});
 
 describe('App routing', () => {
 	beforeEach(() => {
